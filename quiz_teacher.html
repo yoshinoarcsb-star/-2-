@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>一問一答 授業コンソール</title>
+<style>
+:root{--bg:#eceff4;--pn:#fbfbf9;--tx:#1b2435;--mu:#667085;--ln:#dcdfe6;--ac:#2b4a7d;--on:#fff;--soft:#e8edf6;--ok:#2d7a57;--okb:#e3f2ea;--ng:#b23b2c;--ngb:#f8e4e0;--wn:#c98a2b;--gd:#9a7430;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d121d;--pn:#161c2c;--tx:#e7eaf1;--mu:#98a2b6;--ln:#2a3250;--ac:#8fb0ea;--on:#0d121d;--soft:#1f2842;--ok:#5cc08f;--okb:#17342a;--ng:#ee8676;--ngb:#3a1f1c;--wn:#e0a850;--gd:#d4ae68}}
+:root[data-theme="dark"]{--bg:#0d121d;--pn:#161c2c;--tx:#e7eaf1;--mu:#98a2b6;--ln:#2a3250;--ac:#8fb0ea;--on:#0d121d;--soft:#1f2842;--ok:#5cc08f;--okb:#17342a;--ng:#ee8676;--ngb:#3a1f1c;--wn:#e0a850;--gd:#d4ae68}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.7 "Hiragino Sans","Yu Gothic UI","Yu Gothic",sans-serif;padding-bottom:120px}
+[hidden]{display:none!important}button{font:inherit;cursor:pointer}:focus-visible{outline:3px solid var(--ac);outline-offset:2px}
+h1,h2,h3,.q,.code{font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;font-weight:600}
+.top{position:sticky;top:0;z-index:5;background:var(--ac);color:var(--on);display:flex;align-items:center;gap:16px;padding:10px 20px;flex-wrap:wrap}
+.top b{font-size:17px;letter-spacing:.08em}.steps{display:flex;gap:4px;font-size:13px;margin-left:auto}
+.steps span{padding:3px 12px;border-radius:99px;opacity:.65}.steps span.on{background:var(--on);color:var(--ac);opacity:1;font-weight:700}
+.live{display:none;font-size:13px;font-weight:700}.live.on{display:block}.live::before{content:"● ";color:#ff8a7a}
+main{max-width:1100px;margin:0 auto;padding:20px 14px}
+.panel{background:var(--pn);border:1px solid var(--ln);border-radius:12px;padding:20px}
+h2{font-size:19px;margin:0 0 4px}h3{font-size:16px;margin:0 0 10px}.hint{color:var(--mu);font-size:13px;margin:0 0 14px}
+.form{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px}.full{grid-column:1/-1}
+label.f{display:block;font-size:13px;font-weight:700;margin-bottom:4px}label.f small{font-weight:400;color:var(--mu)}
+input[type=text],input[type=number],input[type=password],select{width:100%;font:inherit;padding:9px 11px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);border-radius:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}.chips label{display:flex;gap:6px;align-items:center;padding:5px 12px;border:1px solid var(--ln);border-radius:99px;cursor:pointer;font-size:14px}
+.chips label:has(input:checked){background:var(--ac);color:var(--on);border-color:var(--ac)}.chips input{accent-color:var(--on)}
+.sum{display:flex;align-items:center;gap:14px;margin-top:18px;padding-top:16px;border-top:1px solid var(--ln);flex-wrap:wrap}.sum .n{margin-right:auto;color:var(--mu)}.sum b{color:var(--tx);font-size:20px}
+.btn{border:1px solid transparent;border-radius:10px;padding:10px 20px;font-weight:700;background:var(--soft);color:var(--tx)}
+.btn.main{background:var(--ac);color:var(--on);font-size:18px;padding:12px 30px}.btn.danger{background:var(--ng);color:#fff}.btn.text{background:none;color:var(--mu);text-decoration:underline;font-weight:400}.btn:disabled{opacity:.5}
+.btn.ready{box-shadow:0 0 0 4px var(--ok)}
+.hero{text-align:center;padding:36px 20px}.code{font-size:clamp(60px,15vw,160px);letter-spacing:.12em;line-height:1.1;color:var(--ac);padding-left:.12em;margin:6px 0}
+.count b{font-size:42px}.pn{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px}.pn span{background:var(--soft);padding:3px 14px;border-radius:99px;font-size:15px}
+.stage{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:14px}@media(max-width:860px){.stage,.form,.res{grid-template-columns:1fr}}
+.qhead{display:flex;justify-content:space-between;align-items:baseline;color:var(--mu)}.qhead b{color:var(--tx);font-size:18px}#sec{font-size:28px;font-weight:700;color:var(--tx)}
+.timer{height:10px;background:var(--ln);border-radius:99px;overflow:hidden;margin:8px 0}.timer>div{height:100%;background:var(--wn);width:100%;transition:width .2s linear}
+.q{font-size:clamp(24px,3.6vw,38px);line-height:1.5;margin:14px 0}.cloze{font-size:clamp(22px,3.2vw,32px);line-height:2.1;margin:8px 0}
+.bl{display:inline-block;min-width:3.4em;border-bottom:3px solid var(--ac);background:var(--soft);text-align:center;margin:0 4px}.bl.on{border-color:var(--ok);background:var(--okb);color:var(--ok);font-weight:700}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 0}.op{border:2px solid var(--ln);border-radius:10px;padding:10px 12px;font-size:clamp(18px,2.4vw,26px);text-align:center}
+.op.ok{border-color:var(--ok);background:var(--okb);color:var(--ok);font-weight:700}.ans{font-size:clamp(26px,4vw,42px);font-weight:700;color:var(--ok);margin:10px 0}
+.meter{border-top:1px solid var(--ln);padding-top:12px;margin-top:12px;color:var(--mu)}.meter b{font-size:24px;color:var(--tx);margin:0 14px 0 4px}
+.bar{height:12px;background:var(--ln);border-radius:99px;overflow:hidden;margin-top:6px}.bar>div{height:100%;background:var(--ok);width:0;transition:width .4s}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:8px}
+.tile{border:2px solid var(--ln);border-radius:9px;padding:6px 9px;min-height:60px;font-size:13px;color:var(--mu);word-break:break-all}.tile b{display:block;font-size:15px;color:var(--tx)}
+.tile.ok{background:var(--okb);border-color:var(--ok)}.tile.ng{background:var(--ngb);border-color:var(--ng)}.tile i{font-style:normal;color:var(--ng)}
+.res{display:grid;grid-template-columns:1fr 1fr;gap:14px}.res .wide{grid-column:1/-1}
+table{width:100%;border-collapse:collapse;font-size:14px}th{font-size:12px;color:var(--mu);text-align:left;font-weight:400}td,th{padding:6px 6px;border-bottom:1px solid var(--ln);vertical-align:top}
+.tag{display:inline-block;background:var(--ngb);color:var(--ng);padding:1px 9px;border-radius:7px;margin:2px 4px 2px 0;font-size:13px}.good{color:var(--ok);font-weight:700}
+#hist{position:fixed;inset:0;z-index:20;background:var(--bg);overflow:auto;padding:16px 14px 60px;padding-top:calc(16px + env(safe-area-inset-top,0px))}.hw{max-width:960px;margin:0 auto}
+.hbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}.hbar h2{margin:0}.tabs{display:flex;gap:4px;margin-left:auto}
+.tabs button{border:1px solid var(--ln);background:var(--pn);color:var(--tx);padding:6px 14px;border-radius:99px}.tabs button.on{background:var(--ac);color:var(--on);border-color:var(--ac)}
+details{border-bottom:1px solid var(--ln);padding:6px 0}summary{cursor:pointer;font-weight:700}summary small{font-weight:400;color:var(--mu);margin-left:8px}.hl{margin:4px 0 0 18px;font-size:14px}.hl .d{color:var(--mu);font-size:12px;margin-right:8px}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--pn);border-top:1px solid var(--ln);padding:10px 20px calc(10px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.dock .st{margin-right:auto;font-weight:700}.dock .st small{display:block;font-weight:400;color:var(--mu)}
+.msg{color:var(--ng);min-height:22px}
+</style></head><body>
+<header class="top"><b>一問一答 授業コンソール</b><span class="live" id="live">LIVE</span>
+<button class="btn" id="hb" hidden style="padding:4px 14px">履歴</button>
+<nav class="steps" id="steps" hidden><span>準備</span><span>入室待ち</span><span>授業中</span><span>結果</span></nav></header>
+<main>
+<section id="login" class="panel"><h2>ログイン</h2><p class="hint">講師の合言葉を入力してください。</p>
+  <div style="display:flex;gap:8px;max-width:420px"><input id="sec" type="password" autocomplete="current-password" placeholder="講師の合言葉"><button class="btn main" id="lb" style="font-size:16px;padding:8px 22px">ログイン</button></div><p class="msg" id="lm"></p></section>
+
+<section id="setup" class="panel" hidden><h2>授業を準備する</h2><p class="hint">出題する単元と形式を選んで、ルームを作成します。</p>
+  <div class="form">
+    <div><label class="f" for="sub">教科</label><select id="sub"></select></div>
+    <div><label class="f" for="fld">分野</label><select id="fld"></select></div>
+    <div class="full"><label class="f">単元 <small>複数選べます</small></label><div class="chips" id="units"></div></div>
+    <div class="full"><label class="f">出題形式 <small>自己採点の問題は自動で除きます</small></label><div class="chips" id="fmts"></div></div>
+    <div><label class="f" for="cnt">問題数 <small>0なら条件に合うすべて(最大50)</small></label><input id="cnt" type="number" value="10" min="0" max="50"></div>
+    <div><label class="f" for="tl">1問の制限時間(秒) <small>0なら制限なし</small></label><input id="tl" type="number" value="30" min="0"></div>
+    <div class="full"><label class="f" for="ttl">授業タイトル</label><input id="ttl" type="text" placeholder="例:中2 化学変化 小テスト"></div>
+  </div>
+  <div class="sum"><div class="n">出題数 <b id="sn">0</b> 問</div><span class="msg" id="sm"></span><button class="btn main" id="ob">ルームを作成</button></div></section>
+
+<section id="lobby" class="panel hero" hidden><p class="hint">生徒はホームの「授業に参加」でこのコードを入力します</p>
+  <div class="code" id="code"></div><div class="count">参加中 <b id="pc">0</b> 人</div><div class="pn" id="pnames"></div></section>
+
+<section id="stage" class="stage" hidden>
+  <div class="panel"><div class="qhead"><b id="qh"></b><span id="sec2"></span></div><div class="timer" id="timer"><div></div></div>
+    <div id="qbody"></div>
+    <div class="meter">回答済み<b id="an">0</b>/<span id="at">0</span>　正答率<b id="acc">-</b><div class="bar"><div id="ab"></div></div></div></div>
+  <div class="panel"><h3>生徒の回答</h3><div class="tiles" id="tiles"></div></div>
+</section>
+
+<section id="result" class="res" hidden>
+  <div class="panel"><h3>順位</h3><table id="rank"></table></div>
+  <div class="panel"><h3>正答率の低かった問題</h3><table id="qacc"></table></div>
+  <div class="panel wide"><h3>誰がどの問題を間違えたか</h3><table id="who"></table></div>
+</section>
+</main>
+
+<div id="hist" hidden><div class="hw"><div class="hbar"><h2>授業の履歴</h2><span class="hint" style="margin:0">直近30日</span>
+  <div class="tabs" id="ht"><button data-v="room" class="on">授業別</button><button data-v="stu">生徒別</button><button data-v="q">問題別</button></div>
+  <button class="btn" id="csv">CSV</button><button class="btn main" id="hx" style="font-size:15px;padding:7px 18px">閉じる</button></div>
+  <div class="panel" id="hbody"></div></div></div>
+<div class="dock" id="dock" hidden><div class="st" id="stl"></div><div id="ctrl" style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"></div></div>
+
+<script src="quiz_data.js"></script>
+<script>
+const API_URL='', API_KEY=''; // ← 導入時にSupabaseのFunction URLと公開キーを設定
+const FM=['入力','反応式','ボタン','複数選択','穴埋め'];
+let SEC='', R=null, last={participants:[],answers:[],full:false}, fullAt=0, started=false;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const E={forbidden:'合言葉が違うか、しばらくロックされています',bad_questions:'問題の形式が不正です',bad_op:'いまの状態ではその操作はできません',no_room:'ルームが見つかりません',code_failed:'コードを作れませんでした。もう一度お試しください'};
+async function api(action,body={}){
+  if(!API_URL)return{result:'error',message:'API_URLが未設定です'};
+  try{const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json',apikey:API_KEY,Authorization:'Bearer '+API_KEY},body:JSON.stringify({action,adminSecret:SEC,...body})});return await r.json()}
+  catch(e){return{result:'error',message:'通信できません'}}}
+const msgOf=r=>E[r.message]||r.message||'エラーが発生しました';
+const save=()=>{try{sessionStorage.setItem('quiz_live',JSON.stringify(R))}catch(e){}};
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const fdt=t=>new Date(t).toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+
+/* ---- ログイン ---- */
+async function doLogin(){
+  SEC=$('sec').value;if(!SEC)return;$('lb').disabled=true;
+  const r=await api('classLog',{days:1});$('lb').disabled=false;
+  if(r.result!=='success'){$('lm').textContent=msgOf(r);SEC='';return}
+  $('sec').value='';$('login').hidden=true;$('hb').hidden=false;
+  let s=null;try{s=JSON.parse(sessionStorage.getItem('quiz_live')||'null')}catch(e){}
+  if(s&&s.roomId){R=s;enterRoom()}else{$('setup').hidden=false;$('steps').hidden=false;mark(0);fillSub()}
+}
+$('lb').onclick=doLogin;$('sec').onkeydown=e=>{if(e.key==='Enter')doLogin()};
+function mark(p){document.querySelectorAll('#steps span').forEach((e,i)=>e.className=i===p?'on':'')}
+
+/* ---- 準備 ---- */
+function fillSub(){
+  $('sub').innerHTML=[...new Set(UN.map(u=>u.s))].map(s=>`<option>${esc(s)}</option>`).join('');fillFld();
+  $('fmts').innerHTML=FM.map(f=>`<label><input type="checkbox" value="${f}" checked>${f}</label>`).join('');
+}
+function fillFld(){$('fld').innerHTML=[...new Set(UN.filter(u=>u.s===$('sub').value).map(u=>u.f))].map(f=>`<option>${esc(f)}</option>`).join('');fillUnits()}
+function fillUnits(){
+  const us=UN.filter(u=>u.s===$('sub').value&&u.f===$('fld').value).sort((a,b)=>a.n-b.n);
+  $('units').innerHTML=us.map(u=>`<label><input type="checkbox" value="${esc(u.id)}">${esc(u.name)}</label>`).join('');sum();
+}
+function pool(){
+  const us=new Set([...document.querySelectorAll('#units input:checked')].map(i=>i.value));
+  const fs=new Set([...document.querySelectorAll('#fmts input:checked')].map(i=>i.value));
+  return D.filter(q=>us.has(q.uid)&&fs.has(q.f));
+}
+function sum(){const n=+$('cnt').value,a=pool().length;$('sn').textContent=n>0?Math.min(n,a,50):Math.min(a,50)}
+$('sub').onchange=fillFld;$('fld').onchange=fillUnits;$('units').onchange=sum;$('fmts').onchange=sum;$('cnt').oninput=sum;
+$('ob').onclick=async()=>{
+  let ws=pool();if(!ws.length){$('sm').textContent='単元を1つ以上選んでください';return}
+  ws=shuf(ws);const n=+$('cnt').value;ws=ws.slice(0,n>0?Math.min(n,50):50);
+  const qs=ws.map(({uid,...q})=>q),tv=$('tl').value.trim(),tl=tv===''?30:Math.max(0,Math.round(+tv)||0);
+  $('ob').disabled=true;$('sm').textContent='作成中…';
+  const r=await api('classOpen',{title:$('ttl').value.trim(),questions:qs,timeLimit:tl});
+  if(r.result!=='success'){$('sm').textContent='作成できませんでした('+msgOf(r)+')';$('ob').disabled=false;return}
+  R={roomId:r.roomId,code:r.code,qs,views:r.views,timeLimit:tl,status:'lobby',idx:-1,startedAt:0};save();enterRoom();
+};
+
+/* ---- ルーム ---- */
+function enterRoom(){
+  $('setup').hidden=true;$('steps').hidden=false;$('code').textContent=R.code;$('live').classList.add('on');
+  if(!started){started=true;setInterval(poll,3000);setInterval(()=>api('classHeartbeat',{roomId:R.roomId}),10000);setInterval(tick,200)}
+  api('classHeartbeat',{roomId:R.roomId});render();poll();
+}
+async function ctl(op){
+  if(op==='finish'&&!confirm('授業を終了して結果を表示します。よろしいですか?'))return;
+  const r=await api('classControl',{roomId:R.roomId,op});
+  if(r.result!=='success'){alert('操作できませんでした('+msgOf(r)+')');return}
+  if(r.status)R.status=r.status;if(r.current_index!==undefined)R.idx=r.current_index;
+  if(r.question_started_at)R.startedAt=Date.parse(r.question_started_at);save();render();poll();
+}
+async function closeRoom(){
+  if(!confirm('ルームを閉じます。生徒側の授業表示も消え、この画面には戻れません。よろしいですか?'))return;
+  await api('classClose',{roomId:R.roomId});try{sessionStorage.removeItem('quiz_live')}catch(e){}location.reload();
+}
+const B=(t,c,f)=>`<button class="btn ${c}" onclick="${f}">${t}</button>`;
+function render(){
+  const s=R.status,lastQ=R.idx>=R.qs.length-1,ph=s==='lobby'?1:s==='finished'?3:2;mark(ph);
+  $('lobby').hidden=s!=='lobby';$('stage').hidden=ph!==2;$('result').hidden=s!=='finished';$('dock').hidden=false;
+  const lab={lobby:['入室待ち','生徒が揃ったら開始してください'],question:['出題中','全員が回答したら次へ進めます'],reveal:['解答を表示中','解説のあとで次へ進めます'],paused:['一時停止中',R.timeLimit?'再開すると制限時間が最初から始まります':'再開すると続きから回答できます'],finished:['授業は終了しました','ルームを閉じると生徒側の表示も消えます']}[s];
+  $('stl').innerHTML=`${lab[0]}<small>${lab[1]}</small>`;
+  let h='';
+  if(s==='lobby')h=B('授業を開始','main','ctl(\'start\')')+B('ルームを閉じる','text','closeRoom()');
+  if(s==='question')h=B('一時停止','','ctl(\'pause\')')+B('解答を表示','','ctl(\'reveal\')')+B(lastQ?'最後の問題を終える':'次の問題へ','main','ctl(\'next\')');
+  if(s==='reveal')h=B(lastQ?'結果を見る':'次の問題へ','main','ctl(\'next\')');
+  if(s==='paused')h=B('再開','main','ctl(\'resume\')');
+  if(s==='finished')h=B('ルームを閉じる','danger','closeRoom()');
+  if(s!=='lobby'&&s!=='finished')h+=B('授業を終了','text','ctl(\'finish\')');
+  $('ctrl').innerHTML=h;show();draw();
+}
+/* 投影画面:問題と、解答表示のときの正解 */
+function show(){
+  const q=R.qs[R.idx],v=R.views[R.idx];if(!q)return;
+  const rev=R.status==='reveal'||R.status==='finished',ans=q.a.split('／');
+  $('qh').textContent=`第 ${R.idx+1} 問 / ${R.qs.length}(${q.f==='ボタン'?'選択':q.f})`;
+  const ops=(l,hl)=>'<div class="opts">'+(l||[]).map(o=>`<span class="op${rev&&hl.includes(o)?' ok':''}">${esc(o)}</span>`).join('')+'</div>';
+  let h='';
+  if(q.f==='穴埋め'){const p=q.s.split(/【[①②③④⑤]】/);
+    h='<div class="cloze">'+p.map((x,k)=>esc(x)+(k<p.length-1?`<span class="bl${rev?' on':''}">${rev?esc((q.b[k]||[''])[0]):'\u3000\u3000'}</span>`:'')).join('')+'</div>'+ops(v.opts,q.b.map(x=>x[0]))}
+  else{h=`<div class="q">${esc(q.q)}</div>`;
+    if(q.f==='ボタン')h+=ops(v.opts,[q.a]);else if(q.f==='複数選択')h+='<p class="hint">正解をすべて選ぶ('+ans.length+'個)</p>'+ops(v.opts,ans);
+    else if(rev)h+=`<div class="ans">${esc(q.a)}</div>`}
+  if(q.f==='穴埋め')h=`<div class="q" style="font-size:20px;color:var(--mu)">${esc(q.q)}</div>`+h;
+  $('qbody').innerHTML=h;
+}
+async function poll(){
+  if(!R)return;
+  const fin=R.status==='finished';
+  if(fin&&last.full&&Date.now()-fullAt<15000)return;
+  const b={roomId:R.roomId};if(!fin)b.qIndex=R.idx;
+  const r=await api('classProgress',b);if(r.result!=='success')return;
+  if(fin&&r.full)fullAt=Date.now();last=r;
+  if(r.room&&r.room.status&&r.room.status!=='closed'&&(r.room.status!==R.status||r.room.current_index!==R.idx)){
+    R.status=r.room.status;R.idx=r.room.current_index;if(r.room.question_started_at)R.startedAt=Date.parse(r.room.question_started_at);save();render();return}
+  draw();
+}
+function draw(){
+  const P=last.participants||[],A=last.answers||[],nm={};P.forEach(p=>nm[p.student_number]=p.name||p.student_number);
+  $('pc').textContent=P.length;$('pnames').innerHTML=P.map(p=>`<span>${esc(nm[p.student_number])}</span>`).join('');
+  const cur=A.filter(a=>a.q_index===R.idx),ok=cur.filter(a=>a.is_correct).length,by={};cur.forEach(a=>by[a.student_number]=a);
+  $('an').textContent=cur.length;$('at').textContent=P.length;$('acc').textContent=cur.length?Math.round(ok/cur.length*100)+'%':'-';$('ab').style.width=cur.length?ok/cur.length*100+'%':'0';
+  const rev=R.status==='reveal';
+  $('tiles').innerHTML=P.slice().sort((a,b)=>String(nm[a.student_number]).localeCompare(String(nm[b.student_number]),'ja')).map(p=>{const a=by[p.student_number];
+    return `<div class="tile ${a?(a.is_correct?'ok':'ng'):''}"><b>${esc(nm[p.student_number])}</b>${a&&!a.is_correct&&rev?`<i>${esc(a.chosen||'(空欄)')}</i>`:a?'回答済み':'…'}</div>`}).join('');
+  const all=R.status==='question'&&P.length>0&&cur.length>=P.length,nb=document.querySelector('#ctrl .btn.main');
+  if(nb&&R.status==='question')nb.classList.toggle('ready',all);
+  const sm=$('stl').querySelector('small');if(sm&&R.status==='question')sm.textContent=all?'全員が回答しました。次へ進めます':'全員が回答したら次へ進めます';
+  if(R.status==='finished'){if(last.full)drawResult(P,A,nm);else $('rank').innerHTML='<tr><td>集計中…</td></tr>'}
+}
+function drawResult(P,A,nm){
+  const tot=Math.max(1,R.idx+1),sc={};P.forEach(p=>sc[p.student_number]={n:nm[p.student_number],c:0,t:0});
+  A.forEach(a=>{const s=sc[a.student_number];if(s){if(a.is_correct)s.c++;s.t+=a.time_ms||0}});
+  $('rank').innerHTML='<tr><th></th><th>名前</th><th>正答数</th><th>1問あたり</th></tr>'+Object.values(sc).sort((a,b)=>b.c-a.c||a.t-b.t).map((s,i)=>`<tr><td>${i+1}</td><td>${esc(s.n)}</td><td>${s.c} / ${tot}</td><td>${(s.t/tot/1000).toFixed(1)}秒</td></tr>`).join('');
+  const qs=R.qs.slice(0,R.idx+1).map((q,i)=>{const a=A.filter(x=>x.q_index===i);return{i,q,n:a.length,c:a.filter(x=>x.is_correct).length}}).sort((x,y)=>(x.n?x.c/x.n:2)-(y.n?y.c/y.n:2));
+  $('qacc').innerHTML='<tr><th>問</th><th>問題</th><th>正答率</th></tr>'+qs.map(x=>`<tr><td>Q${x.i+1}</td><td>${esc(x.q.q.slice(0,34))}</td><td>${x.n?Math.round(x.c/x.n*100)+'%':'-'}(${x.c}/${x.n})</td></tr>`).join('');
+  const who=P.map(p=>{const l=[];R.qs.forEach((q,i)=>{if(i>R.idx)return;const a=A.find(x=>x.student_number===p.student_number&&x.q_index===i);if(!a)l.push({i,q,c:null});else if(!a.is_correct)l.push({i,q,c:a.chosen})});return{n:nm[p.student_number],l}}).sort((x,y)=>y.l.length-x.l.length);
+  $('who').innerHTML='<tr><th>名前</th><th>間違えた問題(正解 ← 回答)</th></tr>'+who.map(s=>`<tr><td style="white-space:nowrap"><b>${esc(s.n)}</b><br>${s.l.length?s.l.length+'問':'<span class="good">全問正解</span>'}</td><td>`+s.l.map(m=>`<span class="tag">Q${m.i+1} ${esc(m.q.a.slice(0,24))}${m.c===null?'(未回答)':' ← '+esc(String(m.c||'(空欄)').slice(0,24))}</span>`).join('')+'</td></tr>').join('');
+}
+function tick(){
+  const bar=$('timer');
+  if(!R||R.status!=='question'||!R.startedAt){bar.firstElementChild.style.width='100%';$('sec2').textContent='';return}
+  const el=(Date.now()-R.startedAt)/1000;
+  if(!R.timeLimit){bar.style.display='none';$('sec2').textContent='経過 '+Math.floor(el)+'秒';return}
+  bar.style.display='';const left=R.timeLimit-el;bar.firstElementChild.style.width=Math.max(0,left/R.timeLimit*100)+'%';$('sec2').textContent=Math.max(0,Math.ceil(left))+'秒';
+}
+
+/* ---- 履歴 ---- */
+let LOG=null,hv='room';
+$('hb').onclick=async()=>{
+  $('hist').hidden=false;$('hbody').textContent='読み込み中…';
+  const r=await api('classLog',{days:30});if(r.result!=='success'){$('hbody').textContent='読み込めませんでした。通信を確認して、もう一度開いてください。';return}
+  const nm={},rm={};r.participants.forEach(p=>nm[p.room_id+'|'+p.student_number]=p.name||p.student_number);r.rooms.forEach(x=>rm[x.id]=x);
+  LOG={rooms:r.rooms,parts:r.participants,rows:r.answers.map(a=>({...a,name:nm[a.room_id+'|'+a.student_number]||a.student_number,room:rm[a.room_id]||{title:'',created_at:a.created_at}}))};showHist();
+};
+$('hx').onclick=()=>$('hist').hidden=true;
+$('ht').onclick=e=>{const b=e.target.closest('button');if(!b)return;hv=b.dataset.v;document.querySelectorAll('#ht button').forEach(x=>x.classList.toggle('on',x===b));showHist()};
+const line=(d,a,who)=>`<div class="hl"><span class="d">${d}</span>${who?esc(a.name)+'：':''}${esc(a.correct_text)} ← ${esc(a.chosen||'(空欄)')}</div>`;
+function showHist(){
+  if(!LOG)return;const wrong=LOG.rows.filter(a=>!a.is_correct),grp=(k,f)=>{const g={};wrong.forEach(a=>(g[f(a)]=g[f(a)]||[]).push(a));return g};let h='';
+  if(hv==='room')h=LOG.rooms.map(rm=>{const rs=LOG.rows.filter(a=>a.room_id===rm.id),w=rs.filter(a=>!a.is_correct),pc=LOG.parts.filter(p=>p.room_id===rm.id).length;if(!rs.length&&!pc)return'';
+    const by={};w.forEach(a=>(by[a.name]=by[a.name]||[]).push(a));
+    return `<details><summary>${fdt(rm.created_at)}　${esc(rm.title||'(無題)')}<small>${pc}人　正答率${rs.length?Math.round((rs.length-w.length)/rs.length*100):0}%　誤答${w.length}</small></summary>`+(Object.keys(by).map(n=>`<div style="margin-top:6px"><b>${esc(n)}</b>(${by[n].length}問)`+by[n].sort((x,y)=>x.q_index-y.q_index).map(a=>line('Q'+(a.q_index+1),a)).join('')+'</div>').join('')||'<div class="hl good">誤答はありませんでした</div>')+'</details>'}).join('');
+  else if(hv==='stu'){const g=grp(0,a=>a.student_number);h=Object.values(g).sort((x,y)=>y.length-x.length).map(l=>`<details><summary>${esc(l[0].name)}<small>誤答${l.length}件</small></summary>`+l.map(a=>line(fdt(a.created_at),a)).join('')+'</details>').join('')}
+  else{const g=grp(0,a=>a.question_id);h=Object.values(g).sort((x,y)=>y.length-x.length).map(l=>`<details><summary>${esc((l[0].question_text||'').slice(0,40))}<small>誤答${l.length}件</small></summary>`+l.map(a=>line(fdt(a.created_at),a,1)).join('')+'</details>').join('')}
+  $('hbody').innerHTML=h||'この期間の記録はまだありません';
+}
+$('csv').onclick=()=>{
+  if(!LOG)return;const q=v=>'"'+String(v==null?'':v).replace(/"/g,'""')+'"';
+  const rows=[['日時','授業','生徒番号','名前','問題番号','問題','正解','回答','正誤','回答時間(ms)']].concat(LOG.rows.map(a=>[a.created_at,a.room.title,a.student_number,a.name,a.q_index+1,a.question_text,a.correct_text,a.chosen,a.is_correct?'○':'×',a.time_ms]));
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+rows.map(r=>r.map(q).join(',')).join('\r\n')],{type:'text/csv'}));a.download='class_log_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+};
+</script></body></html>

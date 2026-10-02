@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>一問一答</title>
+<style>
+:root{--bg:#eceff4;--pn:#fbfbf9;--tx:#1b2435;--mu:#667085;--ln:#dcdfe6;--ac:#2b4a7d;--on:#fff;--soft:#e8edf6;--ok:#2d7a57;--ng:#b23b2c;--okb:#e3f2ea;--ngb:#f8e4e0;--gd:#9a7430;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d121d;--pn:#161c2c;--tx:#e7eaf1;--mu:#98a2b6;--ln:#2a3250;--ac:#8fb0ea;--on:#0d121d;--soft:#1f2842;--ok:#5cc08f;--ng:#ee8676;--okb:#17342a;--ngb:#3a1f1c;--gd:#d4ae68}}
+:root[data-theme="dark"]{--bg:#0d121d;--pn:#161c2c;--tx:#e7eaf1;--mu:#98a2b6;--ln:#2a3250;--ac:#8fb0ea;--on:#0d121d;--soft:#1f2842;--ok:#5cc08f;--ng:#ee8676;--okb:#17342a;--ngb:#3a1f1c;--gd:#d4ae68}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.7 "Hiragino Sans","Yu Gothic UI","Yu Gothic",sans-serif;display:flex;justify-content:center;padding:20px 14px}
+#app{width:100%;max-width:480px;background:var(--pn);border:1px solid var(--ln);border-radius:14px;padding:24px 20px;box-shadow:0 12px 32px rgba(15,25,50,.08);align-self:flex-start}
+.screen{display:none}.screen.on{display:block;animation:fi .2s}
+@keyframes fi{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+h1,h2,.q,.stats b,.big{font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;font-weight:600}
+.hd{text-align:center;margin-bottom:18px;padding-bottom:14px;border-bottom:1px solid var(--ln)}
+.eyebrow{font-size:11px;letter-spacing:.3em;color:var(--gd)}
+h1{font-size:28px;margin:4px 0;letter-spacing:.14em}h2{font-size:19px;margin:0 0 14px;text-align:center;letter-spacing:.06em}
+.sub{color:var(--mu);font-size:13px;margin:0}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);text-align:center}
+.stats b{display:block;font-size:26px;line-height:1.3}.stats span{font-size:11px;color:var(--mu)}
+.trk{height:4px;background:var(--ln);border-radius:2px;overflow:hidden;margin:8px 0 14px}.trk i{display:block;height:100%;background:var(--ac);transition:width .3s}
+.btn{display:block;width:100%;font:inherit;font-weight:600;padding:13px;margin:10px 0;border:1px solid var(--ac);background:var(--ac);color:var(--on);border-radius:8px;cursor:pointer;letter-spacing:.06em}
+.btn.ghost{background:transparent;color:var(--ac)}.btn:disabled{opacity:.4;cursor:default}
+.lnk{background:none;border:0;color:var(--mu);font:inherit;cursor:pointer;padding:0}
+.item{display:block;width:100%;text-align:left;font:inherit;color:var(--tx);background:transparent;border:1px solid var(--ln);border-radius:10px;padding:12px 14px 0;margin:8px 0;cursor:pointer;position:relative}
+.item:hover{border-color:var(--ac)}.nm{font-weight:600}.mt{font-size:12px;color:var(--mu)}.chev{position:absolute;right:14px;top:14px;color:var(--mu)}
+.item .trk{margin:10px 0 12px}.lst{max-height:62vh;overflow-y:auto}
+.qtop{display:flex;justify-content:space-between;font-size:12px;color:var(--mu)}
+.qmeta{font-size:11px;letter-spacing:.14em;color:var(--gd)}
+.q{font-size:20px;line-height:1.6;margin:6px 0 16px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.opts.one{grid-template-columns:1fr}
+.opt{font:inherit;padding:12px 8px;min-height:54px;border:1px solid var(--ln);background:transparent;color:var(--tx);border-radius:9px;cursor:pointer}
+.opt.sel{border-color:var(--ac);background:var(--soft)}.opt.ok{border-color:var(--ok);background:var(--okb)}.opt.ng{border-color:var(--ng);background:var(--ngb)}
+.in{width:100%;font:inherit;font-size:17px;padding:12px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);border-radius:8px}
+.slot{font:inherit;min-width:3.4em;padding:0 8px;border:0;border-bottom:2px solid var(--ac);background:var(--soft);color:var(--tx);margin:0 3px;border-radius:3px;cursor:pointer}
+.slot.ok{border-color:var(--ok);background:var(--okb)}.slot.ng{border-color:var(--ng);background:var(--ngb)}
+.fb{margin-top:14px;padding:12px 14px;border-left:3px solid var(--ln);background:var(--bg);border-radius:0 8px 8px 0}
+.fb.ok{border-color:var(--ok)}.fb.ng{border-color:var(--ng)}.fb b.ok{color:var(--ok)}.fb b.ng{color:var(--ng)}
+.big{font-size:56px;text-align:center;line-height:1.2}.big small{font-size:20px;color:var(--mu)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--ln);font-size:14px}
+.chk{display:flex;gap:10px;align-items:center;padding:6px 0}.warn{background:var(--ngb);color:var(--ng);font-size:12px;padding:8px 10px;border-radius:6px;margin-bottom:12px}
+[hidden]{display:none!important}
+</style></head><body><div id="app">
+<div class="warn" id="warn" hidden>進捗を保存できない環境です。このまま使えますが、記録は残りません。</div>
+<section class="screen on" id="s-home"></section><section class="screen" id="s-browse"></section>
+<section class="screen" id="s-ready"></section><section class="screen" id="s-quiz"></section>
+<section class="screen" id="s-result"></section><section class="screen" id="s-rec"></section>
+<section class="screen" id="s-login"></section><section class="screen" id="s-class"></section>
+</div>
+<script src="quiz_data.js"></script>
+<script>
+const API_URL='', API_KEY=''; // ← 導入時にSupabaseのFunction URLと公開キーを設定(空のままなら端末内のみで動作)
+const NET=!!API_URL;
+let ch='';
+const UM=Object.fromEntries(UN.map(u=>[u.id,u]));
+const FMT={入力:'記入',反応式:'反応式',ボタン:'選択',複数選択:'複数選択',穴埋め:'語群から選ぶ',自己採点:'自己採点'};
+const SUB='₀₁₂₃₄₅₆₇₈₉';
+const norm=s=>s.replace(/[₀-₉]/g,c=>SUB.indexOf(c)).replace(/[Ａ-Ｚａ-ｚ０-９]/g,c=>String.fromCharCode(c.charCodeAt(0)-0xFEE0)).replace(/[\s　、,，。]/g,'').replace(/->|=>|＝>|＞|>|⟶/g,'→').replace(/：/g,':');
+const normEq=s=>norm(s).split('→').map(x=>x.split('+').sort().join('+')).join('→');
+const shuf=a=>a.map(x=>[Math.random(),x]).sort((p,q)=>p[0]-q[0]).map(p=>p[1]);
+const $=id=>document.getElementById(id);
+let KEY='quiz_v3',S,can=true,AUTH=null,OUT=[];
+function loadS(){S={done:{},miss:{},last:{},streak:{n:0,d:''}};try{Object.assign(S,JSON.parse(localStorage.getItem(KEY)||'{}'));OUT=JSON.parse(localStorage.getItem(KEY+'_out')||'[]')}catch(e){can=false}}
+loadS();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));localStorage.setItem(KEY+'_out',JSON.stringify(OUT))}catch(e){can=false;$('warn').hidden=false}};
+if(!can)$('warn').hidden=false;
+const day=o=>new Date(Date.now()-o*864e5).toLocaleDateString('sv');
+const streak=()=>[day(0),day(1)].includes(S.streak.d)?S.streak.n:0;
+const cnt=rows=>rows.filter(r=>S.done[r.id]).length;
+const bar=(a,b)=>`<div class="trk"><i style="width:${b?a/b*100:0}%"></i></div>`;
+let P={s:'',f:''},T=null,Q=null,O={},lock=false,sl=[],picked=null,rst=false;
+function go(n){document.querySelectorAll('.screen').forEach(e=>e.classList.toggle('on',e.id==='s-'+n));({home:rHome,browse:rBrowse,ready:rReady,rec:rRec,login:rLogin,class:rClass})[n]?.();scrollTo(0,0)}
+function rHome(){
+  const tot=D.length,dn=cnt(D),ms=D.filter(r=>S.miss[r.id]).length;
+  $('s-home').innerHTML=`<header class="hd"><div class="eyebrow">STUDY NOTES</div><h1>一問一答</h1><p class="sub">暗記を、短い反復で確かなものに。</p></header>
+  <div class="stats"><div><b>${dn}</b><span>/ ${tot} 覚えた問題</span></div><div><b>${streak()}</b><span>日 連続学習</span></div><div><b>${ms}</b><span>問 復習待ち</span></div></div>${bar(dn,tot)}
+  <button class="btn" onclick="P={s:'',f:''};go('browse')">学習をはじめる</button>
+  <button class="btn ghost" ${ms?'':'disabled'} onclick="T={label:'間違えた問題の復習',key:'review',rows:D.filter(r=>S.miss[r.id])};go('ready')">間違えた問題を復習する</button>
+  <button class="btn ghost" onclick="go('rec')">学習記録</button>
+  ${NET?`<button class="btn ghost" onclick="go('class')">授業に参加する</button><p class="sub" style="text-align:center;margin-top:14px">${AUTH.student.name}(${AUTH.student.number}) ・ <button class="lnk" onclick="logout()">ログアウト</button>${OUT.length?` ・ 未送信 ${OUT.length}件`:''}</p>`:''}`;
+}
+const item=(nm,rows,click,sub)=>`<button class="item" onclick="${click}"><div class="nm">${nm}</div><div class="mt">${sub||''}${rows.length}問 ・ 覚えた ${cnt(rows)}</div><span class="chev">›</span>${bar(cnt(rows),rows.length)}</button>`;
+const inU=f=>D.filter(r=>f(UM[r.uid]));
+function rBrowse(){
+  const subs=[...new Set(UN.map(u=>u.s))];let t,h;
+  if(!P.s){t='教科を選ぶ';h=subs.map(s=>item(s,inU(u=>u.s===s),`pick('s','${s}')`)).join('')}
+  else if(!P.f){t=P.s+' ― 分野を選ぶ';h=[...new Set(UN.filter(u=>u.s===P.s).map(u=>u.f))].map(f=>item(f,inU(u=>u.s===P.s&&u.f===f),`pick('f','${f}')`)).join('')}
+  else{
+    const us=UN.filter(u=>u.s===P.s&&u.f===P.f);t=`${P.s}・${P.f} ― 単元を選ぶ`;
+    h=item('すべての単元',inU(u=>u.s===P.s&&u.f===P.f),`choose('${P.f}(すべて)','${P.s}-${P.f}')`)+us.map(u=>item(`<span class="mt">${u.n}</span>　${u.name}`,D.filter(r=>r.uid===u.id),`choose('${u.name}','${u.id}')`)).join('');
+  }
+  $('s-browse').innerHTML=`<h2>${t}</h2><div class="lst">${h}</div><button class="btn ghost" onclick="back()">戻る</button>`;
+}
+function pick(k,v){P[k]=v;if(k==='s'){const f=[...new Set(UN.filter(u=>u.s===v).map(u=>u.f))];if(f.length===1)P.f=f[0]}go('browse')}
+function back(){
+  if(!P.s)return go('home');
+  const multi=new Set(UN.filter(u=>u.s===P.s).map(u=>u.f)).size>1;
+  if(P.f&&multi)P.f='';else{P.s='';P.f=''}
+  go('browse');
+}
+function choose(label,key){T={label,key,rows:D.filter(r=>r.uid===key||(UM[r.uid].s+'-'+UM[r.uid].f)===key)};go('ready')}
+function rReady(){
+  const n=T.rows.length,hasEq=T.rows.some(r=>r.f==='ボタン'&&r.a.includes('→'));
+  $('s-ready').innerHTML=`<h2>${T.label}</h2><p class="sub" style="text-align:center">${n}問 ・ 覚えた ${cnt(T.rows)}問</p>${bar(cnt(T.rows),n)}
+  <label class="chk"><input type="checkbox" id="o-sh" checked> 順番をシャッフルする</label>
+  <label class="chk"><input type="checkbox" id="o-sk"> 覚えた問題を除く</label>
+  ${hasEq?'<label class="chk"><input type="checkbox" id="o-eq"> 反応式は選択式でなく記入式で出題する</label>':''}
+  <label class="chk">出題数　<select class="in" id="o-n" style="width:auto;padding:6px"><option value="0">すべて</option><option value="10">10問</option><option value="20">20問</option></select></label>
+  <p class="sub" id="o-msg" style="color:var(--ng)"></p>
+  <button class="btn" onclick="start()">開始する</button><button class="btn ghost" onclick="go(T.key==='review'?'home':'browse')">戻る</button>`;
+}
+function start(){
+  const g=id=>$(id)?.checked;let l=T.rows.slice();
+  if(g('o-sk'))l=l.filter(r=>!S.done[r.id]);
+  if(g('o-eq'))l=l.map(r=>r.f==='ボタン'&&r.a.includes('→')?{...r,f:'反応式'}:r);
+  if(g('o-sh'))l=shuf(l);
+  const m=+$('o-n').value;if(m)l=l.slice(0,m);
+  if(!l.length){$('o-msg').textContent='出題できる問題がありません。';return}
+  begin(l);
+}
+function begin(l){Q={l,i:0,sc:0,wr:[]};go('quiz');rQ()}
+function rQ(){
+  const r=Q.l[Q.i];lock=false;picked=null;ch='';sl=r.b.map(()=>'');
+  let h=`<div class="qtop"><button class="lnk" onclick="go('home')">‹ 中断</button><span>${Q.i+1} / ${Q.l.length}</span></div>${bar(Q.i,Q.l.length)}<div class="qmeta">${UM[r.uid].name} ・ ${FMT[r.f]}</div><h2 class="q" style="text-align:left">${r.q}</h2>`;
+  const ob=(o,fn)=>`<button class="opt" data-o="${o}" onclick="${fn}(this)">${o}</button>`,grid=a=>`<div class="opts ${Math.max(...a.map(x=>x.length))>14?'one':''}">`;
+  if(r.f==='自己採点')h+=`<button class="btn" onclick="fin(null)">答えを見る</button>`;
+  else if(r.f==='入力'||r.f==='反応式')h+=`<input class="in" id="in" autocomplete="off" placeholder="${r.f==='反応式'?'例: 2H2O → 2H2 + O2':'答えを入力'}"><button class="btn" onclick="gText()">解答する</button>`;
+  else if(r.f==='ボタン'){const a=shuf([r.a,...r.w]);h+=grid(a)+a.map(o=>ob(o,'pk')).join('')+'</div>'}
+  else if(r.f==='複数選択'){const a=shuf([...r.a.split('／'),...r.w]);h+=grid(a)+a.map(o=>ob(o,'tg')).join('')+'</div><button class="btn" onclick="gMulti()">決定</button>'}
+  else{
+    const p=r.s.split(/【[①②]】/);
+    h+='<p style="line-height:2.2">'+p.map((x,k)=>x+(k<p.length-1?`<button class="slot" id="s${k}" onclick="clr(${k})">　</button>`:'')).join('')+'</p>';
+    const bk=shuf([...new Set([...r.b.flat(),...r.d])]);h+=grid(bk)+bk.map(o=>ob(o,'put')).join('')+'</div><button class="btn" onclick="gFill()">解答する</button>';
+  }
+  $('s-quiz').innerHTML=h+'<div id="res"></div>';
+  const e=$('in');if(e){e.focus();e.addEventListener('keydown',ev=>{if(ev.key==='Enter'){ev.preventDefault();gText()}})}
+}
+function gText(){
+  const r=Q.l[Q.i],e=$('in');if(lock||!e.value.trim())return;let ok;
+  if(r.f==='反応式')ok=normEq(e.value)===normEq(r.a);
+  else{const g=r.alt.split('/').map(x=>x.split('|')),n=norm(e.value);ok=g.length>1?g.every(a=>a.some(w=>n.includes(norm(w)))):g[0].some(w=>norm(w)===n)}
+  e.disabled=true;ch=e.value;fin(ok);
+}
+function pk(b){if(lock)return;ch=b.dataset.o;b.classList.add('sel');fin(b.dataset.o===Q.l[Q.i].a)}
+function tg(b){if(!lock)b.classList.toggle('sel')}
+function gMulti(){
+  const c=Q.l[Q.i].a.split('／'),s=[...document.querySelectorAll('.opt.sel')].map(b=>b.dataset.o);
+  if(lock||!s.length)return;ch=s.join('/');fin(s.length===c.length&&c.every(x=>s.includes(x)));
+}
+function put(b){if(lock)return;const k=sl.indexOf('');if(k<0)return;sl[k]=b.dataset.o;$('s'+k).textContent=sl[k]}
+function clr(k){if(lock)return;sl[k]='';$('s'+k).textContent='　'}
+function gFill(){if(lock||sl.includes(''))return;ch=sl.join('/');fin(Q.l[Q.i].b.every((a,k)=>a.includes(sl[k])))}
+function fin(ok){
+  lock=true;const r=Q.l[Q.i],mc=r.a.split('／');
+  document.querySelectorAll('.opt').forEach(b=>{const o=b.dataset.o,c=r.f==='複数選択'?mc.includes(o):o===r.a;if(r.f==='ボタン'||r.f==='複数選択'){b.classList.toggle('ok',c);b.classList.toggle('ng',!c&&b.classList.contains('sel'))}});
+  r.b.forEach((a,k)=>$('s'+k).classList.add(a.includes(sl[k])?'ok':'ng'));
+  let h=`<div class="fb ${ok===null?'':ok?'ok':'ng'}">${ok===null?'':`<b class="${ok?'ok':'ng'}">${ok?'正解':'不正解'}</b><br>`}<span class="mt">正解</span><br>${r.a}</div>`;
+  if(ok===null)h+=`<button class="btn" onclick="mark(true)">覚えていた</button><button class="btn ghost" onclick="mark(false)">覚えていなかった</button>`;
+  else if(ok)h+=`<button class="btn" onclick="mark(true)">次へ</button>`;
+  else h+=`<button class="btn" onclick="mark(false)">次へ</button><button class="btn ghost" onclick="mark(true)">自分では正解だった</button>`;
+  $('res').innerHTML=h;
+}
+function mark(c){
+  const r=Q.l[Q.i];
+  if(c){Q.sc++;S.done[r.id]=1;delete S.miss[r.id]}else{Q.wr.push(r);delete S.done[r.id];S.miss[r.id]=1}
+  if(NET)OUT.push({q:r.id,u:r.uid,f:r.f,ok:!!c,c:ch.slice(0,100)});save();Q.i++;Q.i<Q.l.length?rQ():finish();
+}
+function finish(){
+  const n=Q.l.length,t=day(0);
+  if(S.streak.d!==t)S.streak={n:S.streak.d===day(1)?S.streak.n+1:1,d:t};
+  S.last[T.key]={c:Q.sc,t:n,d:t};save();flush();
+  $('s-result').innerHTML=`<h2>結果</h2><div class="big">${Q.sc}<small> / ${n}</small></div><p class="sub" style="text-align:center">正答率 ${Math.round(Q.sc/n*100)}%</p>${bar(Q.sc,n)}
+  ${Q.wr.length?'<div class="mt" style="margin:14px 0 4px">間違えた問題</div>'+Q.wr.map(r=>`<div class="row"><span>${r.q}</span><span style="color:var(--ac);text-align:right">${r.a}</span></div>`).join(''):'<p class="sub" style="text-align:center;color:var(--ok)">すべて正解です</p>'}
+  <button class="btn" ${Q.wr.length?'':'hidden'} onclick="begin(Q.wr)">間違えた問題をやり直す</button>
+  <button class="btn ghost" onclick="go('ready')">同じ設定でもう一度</button><button class="btn ghost" onclick="go('home')">ホームへ</button>`;
+  go('result');
+}
+function rRec(){
+  $('s-rec').innerHTML=`<h2>学習記録</h2><div class="lst">`+UN.map(u=>{const rs=D.filter(r=>r.uid===u.id),l=S.last[u.id];return `<div class="item" style="cursor:default"><div class="nm">${u.s}・${u.f}　${u.name}</div><div class="mt">覚えた ${cnt(rs)} / ${rs.length}問 ・ ${l?`前回 ${l.c} / ${l.t}(${l.d})`:'未学習'}</div>${bar(cnt(rs),rs.length)}</div>`}).join('')+`</div>
+  <button class="btn ghost" onclick="if(rst){S={done:{},miss:{},last:{},streak:{n:0,d:''}};save();rst=false}else{rst=true;this.textContent='もう一度押すと、記録をすべて消去します'}">記録を消去する</button>
+  <button class="btn" onclick="rst=false;go('home')">ホームへ</button>`;
+}
+/* ---------- サーバー連携 ---------- */
+async function api(body,tries=2){
+  for(let n=0;;n++){
+    const ac=new AbortController(),tm=setTimeout(()=>ac.abort(),10000);
+    try{const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json',apikey:API_KEY,Authorization:'Bearer '+API_KEY},body:JSON.stringify(body),signal:ac.signal});clearTimeout(tm);if(!r.ok&&r.status>=500)throw 0;return await r.json()}
+    catch(e){clearTimeout(tm);if(n>=tries)return {result:'error',message:'network'};await new Promise(s=>setTimeout(s,1500*(n+1)))}
+  }
+}
+const AKEY='quiz_auth';
+function useUser(a){AUTH=a;KEY='quiz_v3_'+a.student.number;loadS()}
+async function sync(){
+  const r=await api({action:'loadProgress',token:AUTH.token});
+  if(r.result==='error'&&r.message==='invalid_token'){logout(true);return false}
+  if(r.result==='success'){
+    const ap=(q,m)=>{if(m){S.done[q]=1;delete S.miss[q]}else{delete S.done[q];S.miss[q]=1}};
+    r.progress.forEach(p=>ap(p.q,p.m));OUT.forEach(o=>ap(o.q,o.ok));save();
+  }
+  return true;
+}
+let flushing=false;
+async function flush(){
+  if(!NET||!AUTH||flushing||!OUT.length)return;flushing=true;
+  while(OUT.length){
+    const b=OUT.slice(0,200),r=await api({action:'submitAnswers',token:AUTH.token,unit:T?T.key:'',answers:b});
+    if(r.result!=='success'){if(r.message==='invalid_token')logout(true);break}
+    OUT.splice(0,b.length);save();
+  }
+  flushing=false;if(AUTH&&$('s-home').classList.contains('on'))rHome();
+}
+addEventListener('online',flush);
+function rLogin(msg){$('s-login').innerHTML=`<header class="hd"><div class="eyebrow">STUDY NOTES</div><h1>一問一答</h1><p class="sub">生徒番号と合言葉でログイン</p></header>
+<input class="in" id="ln" inputmode="numeric" placeholder="生徒番号" autocomplete="username"><div style="height:10px"></div><input class="in" id="lp" type="password" inputmode="numeric" placeholder="合言葉" autocomplete="current-password">
+<p class="sub" id="lm" style="color:var(--ng);min-height:22px;margin-top:8px">${typeof msg==='string'?msg:''}</p><button class="btn" id="lb" onclick="doLogin()">ログイン</button>`}
+async function doLogin(){
+  const n=$('ln').value.trim(),p=$('lp').value;if(!n||!p)return;$('lb').disabled=true;
+  const r=await api({action:'login',number:n,passcode:p});$('lb').disabled=false;
+  if(r.result!=='success'){$('lm').textContent={too_many_attempts:'失敗が続いたため、しばらく使えません。時間をおいてください。',network:'通信できません。電波の良い場所でやり直してください。'}[r.message]||'生徒番号または合言葉が違います。';return}
+  const a={token:r.token,student:r.student};try{localStorage.setItem(AKEY,JSON.stringify(a))}catch(e){}
+  useUser(a);await sync();go('home');flush();
+}
+function logout(expired){save();AUTH=null;try{localStorage.removeItem(AKEY)}catch(e){}KEY='quiz_v3';loadS();go('login');if(expired)rLogin('ログインの有効期限が切れました。もう一度ログインしてください。')}
+/* ---------- 授業参加 ---------- */
+let R=null,cT=0,cK='',cIdx=0,cDone={};
+function rClass(){R=null;clearTimeout(cT);$('s-class').innerHTML=`<h2>授業に参加</h2><input class="in" id="cc" inputmode="numeric" placeholder="6桁のコード"><p class="sub" id="cm" style="color:var(--ng);min-height:22px;margin-top:8px"></p><button class="btn" onclick="cJoin()">参加する</button><button class="btn ghost" onclick="go('home')">戻る</button>`}
+async function cJoin(){
+  const r=await api({action:'classJoin',token:AUTH.token,code:$('cc').value.trim()});
+  if(r.result!=='success'){$('cm').textContent={not_found:'コードが見つかりません。',too_many_attempts:'試行が多すぎます。しばらくしてからやり直してください。',network:'通信できません。'}[r.message]||'参加できませんでした。';return}
+  R=r.room;cK='';cDone=Object.fromEntries(r.answered.map(i=>[i,1]));cPoll();
+}
+async function cPoll(){
+  clearTimeout(cT);if(!R)return;
+  const r=await api({action:'classPoll',token:AUTH.token,roomId:R.id},0);
+  if(r.result==='success')cShow(r);else if(r.message==='invalid_token'){logout(true);return}
+  if(R&&!(r.room&&['finished','closed'].includes(r.room.status)))cT=setTimeout(cPoll,r.room&&r.room.status==='question'&&!cDone[r.room.current_index]?2000:4000);
+}
+function cShow(r){
+  const m=r.room,k=m.status+':'+m.current_index+':'+(cDone[m.current_index]?1:0);if(k===cK)return;cK=k;cIdx=m.current_index;
+  const msg=s=>`<p class="sub" style="text-align:center;margin:40px 0">${s}</p>`;
+  let h=`<div class="qtop"><span>${m.title||'授業'}</span><span>${m.status==='lobby'?'':`${m.current_index+1} / ${m.question_count}`}</span></div>`;
+  if(m.status==='lobby')h+=msg('講師の開始を待っています…');
+  else if(m.status==='paused')h+=msg('一時停止中です。');
+  else if(m.status==='question')h+=cQ(r.q,m);
+  else if(m.status==='reveal'||m.status==='finished'){
+    const v=r.reveal;h+=`<h2 class="q" style="text-align:left">${r.q?r.q.q:''}</h2>`;
+    if(v)h+=`<div class="fb ${v.mine?(v.mine.is_correct?'ok':'ng'):''}">${v.mine?`<b class="${v.mine.is_correct?'ok':'ng'}">${v.mine.is_correct?'正解':'不正解'}</b><br>`:'<span class="mt">未回答</span><br>'}<span class="mt">正解</span><br>${v.answer}</div>`;
+    if(m.status==='finished')h+=msg('授業は終了しました。お疲れさまでした。');
+  }else h+=msg('授業は終了しました。');
+  h+=['finished','closed'].includes(m.status)?`<button class="btn" onclick="R=null;go('home')">ホームへ</button>`:`<button class="lnk" style="margin-top:16px" onclick="R=null;clearTimeout(cT);go('home')">‹ 退出する</button>`;
+  $('s-class').innerHTML=h;
+}
+function cQ(q,m){
+  lock=false;sl=Array(q.n||0).fill('');
+  let h=`<h2 class="q" style="text-align:left">${q.q}</h2>`;
+  if(cDone[m.current_index])return h+'<p class="sub" style="text-align:center">回答を送信しました。結果の発表をお待ちください。</p>';
+  const o=fn=>`<div class="opts ${Math.max(0,...(q.opts||[]).map(x=>x.length))>14?'one':''}">`+(q.opts||[]).map(x=>`<button class="opt" data-o="${x}" onclick="${fn}(this)">${x}</button>`).join('')+'</div>';
+  if(q.f==='ボタン')h+=o('cPick');
+  else if(q.f==='複数選択')h+=o('tg')+`<button class="btn" onclick="cSend([...document.querySelectorAll('.opt.sel')].map(b=>b.dataset.o))">送信する</button>`;
+  else if(q.f==='穴埋め'){const p=q.s.split(/【[①②]】/);h+='<p style="line-height:2.2">'+p.map((x,k)=>x+(k<p.length-1?`<button class="slot" id="s${k}" onclick="clr(${k})">　</button>`:'')).join('')+'</p>'+o('put')+`<button class="btn" onclick="if(!sl.includes(''))cSend(sl.slice())">送信する</button>`}
+  else h+=`<input class="in" id="ci" autocomplete="off"><button class="btn" onclick="cSend($('ci').value)">送信する</button>`;
+  return h;
+}
+const cPick=b=>cSend(b.dataset.o);
+async function cSend(v){
+  const i=cIdx;if(cDone[i]||(Array.isArray(v)?!v.length:!String(v).trim()))return;cDone[i]=1;
+  const r=await api({action:'classAnswer',token:AUTH.token,roomId:R.id,qIndex:i,input:v});
+  if(r.result!=='success'&&r.message!=='time_over'&&r.message!=='not_open')delete cDone[i];
+  cK='';cPoll();
+}
+async function boot(){
+  if(!NET){rHome();return}
+  let a=null;try{a=JSON.parse(localStorage.getItem(AKEY)||'null')}catch(e){}
+  if(a&&a.token){useUser(a);if(await sync()){go('home');flush();return}}
+  go('login');
+}
+boot();
+</script></body></html>

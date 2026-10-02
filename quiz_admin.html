@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>一問一答 管理コンソール</title>
+<style>
+:root{--bg:#eceff4;--pn:#fbfbf9;--tx:#1b2435;--mu:#667085;--ln:#dcdfe6;--ac:#2b4a7d;--on:#fff;--soft:#e8edf6;--ok:#2d7a57;--ng:#b23b2c;--ngb:#f8e4e0;--gd:#9a7430;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d121d;--pn:#161c2c;--tx:#e7eaf1;--mu:#98a2b6;--ln:#2a3250;--ac:#8fb0ea;--on:#0d121d;--soft:#1f2842;--ok:#5cc08f;--ng:#ee8676;--ngb:#3a1f1c;--gd:#d4ae68}}
+:root[data-theme="dark"]{--bg:#0d121d;--pn:#161c2c;--tx:#e7eaf1;--mu:#98a2b6;--ln:#2a3250;--ac:#8fb0ea;--on:#0d121d;--soft:#1f2842;--ok:#5cc08f;--ng:#ee8676;--ngb:#3a1f1c;--gd:#d4ae68}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.7 "Hiragino Sans","Yu Gothic UI","Yu Gothic",sans-serif;padding:16px 12px}
+main{max-width:1000px;margin:0 auto;background:var(--pn);border:1px solid var(--ln);border-radius:12px;padding:20px 18px}
+h1,h2{font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;font-weight:600}
+h1{font-size:22px;margin:0 0 4px;letter-spacing:.1em}h2{font-size:16px;margin:20px 0 8px}
+.sub{color:var(--mu);font-size:12px;margin:0}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0;border-bottom:1px solid var(--ln)}
+.tab{font:inherit;background:none;border:0;border-bottom:3px solid transparent;padding:8px 12px;color:var(--mu);cursor:pointer}
+.tab.on{color:var(--ac);border-color:var(--ac);font-weight:600}
+.tw{overflow-x:auto;margin:8px 0}table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border:1px solid var(--ln);padding:5px 8px;text-align:left;vertical-align:top;white-space:nowrap}th{background:var(--soft)}
+.btn{font:inherit;font-weight:600;padding:7px 14px;border:1px solid var(--ac);background:var(--ac);color:var(--on);border-radius:7px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ac)}.btn.sm{padding:2px 8px;font-size:12px;font-weight:400}.btn.ng{border-color:var(--ng);color:var(--ng);background:transparent}
+.btn:disabled{opacity:.4}
+input,textarea,select{font:inherit;padding:7px 9px;border:1px solid var(--ln);background:var(--bg);color:var(--tx);border-radius:6px;max-width:100%}
+textarea{width:100%;min-height:90px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:8px 0}
+.msg{padding:8px 12px;border-left:3px solid var(--gd);background:var(--soft);margin:10px 0;font-size:13px}
+.msg.ng{border-color:var(--ng);background:var(--ngb);color:var(--ng)}
+.pc{font:600 20px ui-monospace,Menlo,Consolas,monospace;letter-spacing:.2em}
+.mu{color:var(--mu)}[hidden]{display:none!important}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+</style></head><body><main>
+<h1>一問一答 管理コンソール</h1>
+<p class="sub">生徒の管理・成績の確認・おすすめ単元の設定</p>
+
+<section id="login">
+  <h2>ログイン</h2>
+  <div class="bar"><input id="sec" type="password" placeholder="管理者の合言葉" autocomplete="current-password" style="min-width:240px"><button class="btn" id="lb">ログイン</button></div>
+  <div class="msg" id="lm" hidden></div>
+</section>
+
+<section id="app" hidden>
+  <div class="bar" style="justify-content:space-between"><div class="tabs" style="margin:0;border:0">
+    <button class="tab on" data-t="stu">生徒</button><button class="tab" data-t="sum">成績</button>
+    <button class="tab" data-t="weak">苦手問題</button><button class="tab" data-t="pick">おすすめ単元</button></div>
+    <button class="btn ghost sm" id="out">ログアウト</button></div>
+  <div class="msg" id="msg" hidden></div>
+
+  <div id="t-stu">
+    <div class="bar"><input id="flt" placeholder="番号・氏名で絞り込み"><span class="mu" id="cnt"></span></div>
+    <div class="tw"><table><thead><tr><th>番号</th><th>氏名</th><th>校舎</th><th>学年</th><th>操作</th></tr></thead><tbody id="sb"></tbody></table></div>
+    <h2>生徒の追加(1行1人)</h2>
+    <p class="sub">形式:番号,氏名,校舎,学年,合言葉(校舎・学年は空欄可。4文字以上の合言葉)</p>
+    <textarea id="add" placeholder="2001,山田太郎,本校,中2,4821"></textarea>
+    <div class="bar"><button class="btn" id="addb">追加する</button></div>
+  </div>
+
+  <div id="t-sum" hidden>
+    <div class="bar">期間 <input type="date" id="from"> 〜 <input type="date" id="to"><button class="btn" id="sumb">表示</button></div>
+    <h2>生徒ごと</h2><div class="tw"><table><thead><tr><th>番号</th><th>氏名</th><th>校舎</th><th>学年</th><th>回答数</th><th>正答率</th><th>覚えた問題</th><th>最終回答</th></tr></thead><tbody id="ssb"></tbody></table></div>
+    <h2>単元ごと</h2><div class="tw"><table><thead><tr><th>単元ID</th><th>回答数</th><th>正答率</th><th>取り組んだ生徒数</th></tr></thead><tbody id="usb"></tbody></table></div>
+  </div>
+
+  <div id="t-weak" hidden>
+    <div class="bar">校舎 <input id="wsch" placeholder="空欄で全体" style="width:130px"> 件数 <input id="wlim" type="number" value="30" min="1" max="200" style="width:80px"><button class="btn" id="wb">表示</button></div>
+    <p class="sub">問題文はサーバーに置いていないため、問題IDで表示します。</p>
+    <div class="tw"><table><thead><tr><th>問題ID</th><th>単元</th><th>誤答</th><th>回答</th><th>誤答率</th><th>誤答した生徒数</th></tr></thead><tbody id="wbb"></tbody></table></div>
+  </div>
+
+  <div id="t-pick" hidden>
+    <div class="bar"><input id="pu" placeholder="単元ID(例:SCI-CHE-01)"><input id="ps" placeholder="校舎(空欄で全体)" style="width:150px"><input id="pg" placeholder="学年(空欄で全体)" style="width:150px"><button class="btn" id="pb">追加</button></div>
+    <div class="tw"><table><thead><tr><th>単元ID</th><th>校舎</th><th>学年</th><th></th></tr></thead><tbody id="pbb"></tbody></table></div>
+  </div>
+</section>
+
+<script>
+const API_URL='', API_KEY=''; // ← 導入時にSupabaseのFunction URLと公開キーを設定
+let SEC='', STU=[];
+const $=id=>document.getElementById(id);
+const E={invalid_json:'送信内容が不正です',forbidden:'合言葉が違うか、しばらくロックされています',bad_size:'件数が多すぎるか空です',bad_student:'形式が不正です(番号は英数字、氏名は必須、合言葉は4文字以上)',not_found:'見つかりません',save_failed:'保存に失敗しました',duplicate:'すでに登録されています',missing_params:'入力が足りません',failed:'取得に失敗しました',server_error:'サーバーでエラーが発生しました'};
+async function api(action,body={}){
+  if(!API_URL)return{result:'error',message:'API_URLが未設定です'};
+  try{const r=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json',apikey:API_KEY,Authorization:'Bearer '+API_KEY},body:JSON.stringify({action,adminSecret:SEC,...body})});
+    return await r.json()}catch(e){return{result:'error',message:'通信できません'}}}
+const ok=r=>r&&r.result==='success';
+const msgOf=r=>E[r&&r.message]||(r&&r.message)||'エラーが発生しました';
+function say(t,ng,node){const m=$('msg');m.className='msg'+(ng?' ng':'');m.textContent=t;if(node)m.append(node);m.hidden=false}
+const cell=(tr,v,cls)=>{const td=document.createElement('td');td.textContent=v??'';if(cls)td.className=cls;tr.append(td);return td};
+function fill(id,rows,cols){const tb=$(id);tb.textContent='';for(const r of rows){const tr=document.createElement('tr');cols(r,tr);tb.append(tr)}if(!rows.length){const tr=document.createElement('tr');cell(tr,'データがありません','mu');tb.append(tr)}}
+const pct=(a,b)=>b?Math.round(a/b*100)+'%':'-';
+const fmt=t=>t?new Date(t).toLocaleString('ja-JP',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'-';
+function btn(label,cls,fn){const b=document.createElement('button');b.className='btn sm '+cls;b.textContent=label;b.onclick=fn;return b}
+
+async function doLogin(){
+  SEC=$('sec').value;if(!SEC)return;$('lb').disabled=true;
+  const r=await api('students');$('lb').disabled=false;
+  if(!ok(r)){const m=$('lm');m.className='msg ng';m.textContent=msgOf(r);m.hidden=false;SEC='';return}
+  STU=r.students;$('sec').value='';$('login').hidden=true;$('app').hidden=false;renderStu();
+}
+$('lb').onclick=doLogin;$('sec').onkeydown=e=>{if(e.key==='Enter')doLogin()};
+$('out').onclick=()=>{SEC='';STU=[];$('app').hidden=true;$('login').hidden=false;$('msg').hidden=true};
+
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('on',x===b));
+  for(const t of['stu','sum','weak','pick'])$('t-'+t).hidden=t!==b.dataset.t;
+  $('msg').hidden=true;if(b.dataset.t==='pick')loadPick();
+});
+
+// ----- 生徒 -----
+async function reload(){const r=await api('students');if(ok(r)){STU=r.students;renderStu()}else say(msgOf(r),true)}
+function renderStu(){
+  const q=$('flt').value.trim().toLowerCase();
+  const rows=STU.filter(s=>!q||s.number.toLowerCase().includes(q)||s.name.toLowerCase().includes(q));
+  $('cnt').textContent=rows.length+' / '+STU.length+'人';
+  fill('sb',rows,(s,tr)=>{cell(tr,s.number);cell(tr,s.name);cell(tr,s.school);cell(tr,s.grade);
+    const td=cell(tr,'');
+    td.append(btn('合言葉を再発行','ghost',()=>reissue(s)),' ',btn('進捗リセット','ghost',()=>resetProg(s)),' ',btn('削除','ng',()=>del(s)))});
+}
+$('flt').oninput=renderStu;
+async function reissue(s){
+  if(!confirm(s.name+'さんの合言葉を再発行します。今の合言葉は使えなくなり、ログイン中の端末も外れます。'))return;
+  const r=await api('resetPasscode',{number:s.number});
+  if(!ok(r))return say(msgOf(r),true);
+  const p=document.createElement('div');p.className='pc';p.textContent=r.passcode;
+  say(s.name+'さんの新しい合言葉(この画面を閉じると再表示できません):',false,p);
+}
+async function resetProg(s){
+  if(!confirm(s.name+'さんの「覚えた」状態をすべてリセットします。学習の履歴は残ります。'))return;
+  const r=await api('resetProgress',{number:s.number});say(ok(r)?s.name+'さんの進捗をリセットしました':msgOf(r),!ok(r));
+}
+async function del(s){
+  if(!confirm(s.name+'さん('+s.number+')を削除します。学習記録もすべて消え、元に戻せません。'))return;
+  const r=await api('deleteStudent',{number:s.number});
+  if(ok(r)){say(s.name+'さんを削除しました');reload()}else say(msgOf(r),true);
+}
+$('addb').onclick=async()=>{
+  const lines=$('add').value.split('\n').map(x=>x.trim()).filter(Boolean);
+  const list=lines.map(l=>{const[a,b,c,d,e]=l.split(/[,，\t]/).map(x=>x.trim());return{number:a,name:b,school:c||'',grade:d||'',passcode:e}});
+  if(!list.length)return say('追加する生徒を入力してください',true);
+  $('addb').disabled=true;const r=await api('addStudents',{students:list});$('addb').disabled=false;
+  if(!ok(r))return say(msgOf(r),true);
+  say('追加:'+r.added.length+'人'+(r.skipped.length?'/ すでにあるため追加しなかった番号:'+r.skipped.join('、'):''));
+  $('add').value='';reload();
+};
+
+// ----- 成績 -----
+const dayEnd=v=>v?new Date(new Date(v+'T00:00:00').getTime()+86400e3).toISOString():undefined;
+const dayStart=v=>v?new Date(v+'T00:00:00').toISOString():undefined;
+$('sumb').onclick=async()=>{
+  const b={from:dayStart($('from').value),to:dayEnd($('to').value)};
+  const[a,u]=await Promise.all([api('adminSummary',b),api('adminUnits',b)]);
+  if(!ok(a)||!ok(u))return say(msgOf(ok(a)?u:a),true);
+  $('msg').hidden=true;
+  fill('ssb',a.rows,(s,tr)=>{cell(tr,s.number);cell(tr,s.name);cell(tr,s.school);cell(tr,s.grade);cell(tr,s.answers);cell(tr,pct(s.correct,s.answers));cell(tr,s.mastered);cell(tr,fmt(s.last_at))});
+  fill('usb',u.rows,(s,tr)=>{cell(tr,s.unit_id||'(範囲なし)');cell(tr,s.answers);cell(tr,pct(s.correct,s.answers));cell(tr,s.students)});
+};
+
+// ----- 苦手問題 -----
+$('wb').onclick=async()=>{
+  const r=await api('adminWeak',{limit:Number($('wlim').value)||30,school:$('wsch').value.trim()||null});
+  if(!ok(r))return say(msgOf(r),true);$('msg').hidden=true;
+  fill('wbb',r.rows,(s,tr)=>{cell(tr,s.question_id);cell(tr,s.unit_id);cell(tr,s.wrong);cell(tr,s.total);cell(tr,pct(s.wrong,s.total));cell(tr,s.students)});
+};
+
+// ----- おすすめ単元 -----
+async function loadPick(){
+  const r=await api('pickupsAdmin');if(!ok(r))return say(msgOf(r),true);
+  fill('pbb',r.pickups,(p,tr)=>{cell(tr,p.unit_id);cell(tr,p.school||'全体');cell(tr,p.grade||'全体');cell(tr,'').append(btn('削除','ng',async()=>{const x=await api('deletePickup',{id:p.id});if(ok(x))loadPick();else say(msgOf(x),true)}))});
+}
+$('pb').onclick=async()=>{
+  const r=await api('addPickup',{unitId:$('pu').value.trim(),school:$('ps').value.trim()||null,grade:$('pg').value.trim()||null});
+  if(!ok(r))return say(msgOf(r),true);$('pu').value='';$('msg').hidden=true;loadPick();
+};
+</script></main></body></html>
